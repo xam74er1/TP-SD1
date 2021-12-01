@@ -1,0 +1,14 @@
+image: openjdk:17
+
+variables:
+  # Configure mysql environment variables (https://hub.docker.com/_/mysql/)
+  MARIADB_DATABASE: springbootdb
+  MARIADB_ROOT_PASSWORD: root
+
+build-job:
+  services:
+    - mariadb:latest
+  stage: build
+  script: 
+    - apt-get install maven
+    - mvn test
