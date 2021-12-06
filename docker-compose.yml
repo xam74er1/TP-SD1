@@ -1,0 +1,12 @@
+version: '3'
+
+services:
+  mariadb:
+    image: 'mariadb:latest'
+    environment:
+      - MARIADB_ROOT_PASSWORD=root
+    command: --init-file /data/application/initdb.sql
+    volumes:
+      - ./initdb.sql:/data/application/initdb.sql
+    ports:
+      - "3306:3306"
