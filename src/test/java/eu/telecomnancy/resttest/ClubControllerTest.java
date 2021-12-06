@@ -3,7 +3,9 @@ package eu.telecomnancy.resttest;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import eu.telecomnancy.resttest.Model.Club;
+import eu.telecomnancy.resttest.Model.Student;
 import eu.telecomnancy.resttest.ModelVue.ClubModel;
+import eu.telecomnancy.resttest.ModelVue.StudentModel;
 import eu.telecomnancy.resttest.Service.ClubService;
 import eu.telecomnancy.resttest.Service.StudentService;
 import org.junit.jupiter.api.Test;
@@ -18,9 +20,7 @@ import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilde
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static org.hamcrest.Matchers.*;
@@ -45,6 +45,12 @@ public class ClubControllerTest {
     ClubModel club1 = new ClubModel(RECORD_1);
     ClubModel club2 = new ClubModel(RECORD_2);
     ClubModel club3 = new ClubModel(RECORD_3);
+
+    Student student = new Student("Student1");
+    Student student2 = new Student("Student2");
+    Student student3 = new Student("Student3");
+    Set<Student> studentSet = new HashSet<>();
+    Set<StudentModel> studentModelsSet = new HashSet<>();
 
 
     @Test
@@ -111,6 +117,23 @@ public class ClubControllerTest {
                 .andExpect(jsonPath("$", notNullValue()))
                 .andExpect(jsonPath("$.name", is("Dessin")));
    }
+
+   //Create a test to find all member of a club by id
+    @Test
+    public void findAllMembersByClubId_success() throws Exception {
+        RECORD_1.setMembers(studentSet);
+        studentSet.add(student);
+        studentSet.add(student2);
+        studentSet.add(student3);
+        Mockito.when(clubService.findClubById(0L)).thenReturn(RECORD_1);
+        //Mockito.when(clubService.findClubById(0L).getMembers()).thenReturn(RECORD_1);
+
+        mockMvc.perform(MockMvcRequestBuilders
+                .get("/clubs/0/students")
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(3)));
+    }
 
 }
 

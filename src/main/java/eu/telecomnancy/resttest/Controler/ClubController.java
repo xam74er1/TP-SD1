@@ -1,5 +1,7 @@
 package eu.telecomnancy.resttest.Controler;
 
+import eu.telecomnancy.resttest.Model.Student;
+import eu.telecomnancy.resttest.ModelVue.StudentModel;
 import eu.telecomnancy.resttest.Service.ClubService;
 import eu.telecomnancy.resttest.ModelVue.ClubModel;
 import eu.telecomnancy.resttest.Model.Room;
@@ -8,6 +10,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 
+import java.util.ArrayList;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import static java.lang.Long.parseLong;
@@ -51,6 +55,13 @@ public class ClubController {
     @DeleteMapping("/clubs/{id}")
     public void deleteClub(@PathVariable Long id) {
         clubService.deleteClub(id);
+    }
+
+    //Get all students of a club
+    @GetMapping("/clubs/{id}/students")
+    public Set<StudentModel> getAllStudentsOfClub(@PathVariable Long id) {
+        System.out.println("DEBUG : "+clubService.findClubById(id).getMembers().size());
+        return clubService.findClubById(id).getMembers().stream().map(StudentModel::new).collect(Collectors.toSet());
     }
 
     @PostMapping("/room/")
