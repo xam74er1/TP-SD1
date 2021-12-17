@@ -1,10 +1,12 @@
 package eu.telecomnancy.resttest.Controler;
 
+import eu.telecomnancy.resttest.Model.Club;
 import eu.telecomnancy.resttest.Model.Student;
 import eu.telecomnancy.resttest.ModelVue.StudentModel;
 import eu.telecomnancy.resttest.Service.ClubService;
 import eu.telecomnancy.resttest.ModelVue.ClubModel;
 import eu.telecomnancy.resttest.Model.Room;
+import eu.telecomnancy.resttest.Service.StudentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -23,6 +25,9 @@ public class ClubController {
 
     @Autowired
     private ClubService clubService;
+
+    @Autowired
+    private StudentService studentService;
 
 
     /* Avec GET et ce mapping on récupère tous les clubs exisants. */
@@ -60,8 +65,37 @@ public class ClubController {
     //Get all students of a club
     @GetMapping("/clubs/{id}/students")
     public Set<StudentModel> getAllStudentsOfClub(@PathVariable Long id) {
-        System.out.println("DEBUG : "+clubService.findClubById(id).getMembers().size());
         return clubService.findClubById(id).getMembers().stream().map(StudentModel::new).collect(Collectors.toSet());
+    }
+
+    //make a post request to set the president to a club
+    //We use id because many student can have the same name
+    @PostMapping("/clubs/{id}/president")
+    public ResponseEntity<ClubModel> setPresident(@PathVariable Long id, @RequestBody StudentModel student) {
+        try {
+           return ResponseEntity.ok( new ClubModel(clubService.setPresident(id,student.getId())));
+        }catch (Exception e){
+            return ResponseEntity.badRequest().build();
+        }
+    }
+    //set the president fir a club using id in the url
+    @PostMapping("/clubs/{id}/president/{studendId}")
+    public ResponseEntity<ClubModel> setPresident(@PathVariable Long id, @PathVariable long studendId) {
+        try {
+            return ResponseEntity.ok( new ClubModel(clubService.setPresident(id,studendId)));
+        }catch (Exception e){
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
+    //make a resquete to delete a president
+    @DeleteMapping("/clubs/{id}/president")
+    public ResponseEntity<ClubModel> deletePresident(@PathVariable Long id) {
+        try {
+            return ResponseEntity.ok( new ClubModel(clubService.deletePresident(id)));
+        }catch (Exception e){
+            return ResponseEntity.badRequest().build();
+        }
     }
 
     @PostMapping("/room/")

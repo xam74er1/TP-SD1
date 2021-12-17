@@ -120,4 +120,22 @@ public class ClubService {
     public Room findRoomById(Long id) {
         return roomRepository.findById(id).orElseThrow(() -> new IdNotFoundException(id));
     }
+
+    //Set the president to the club
+    public Club setPresident(long idClub, long idStudent) {
+        Club club=this.findClubById(idClub);
+        Student student=studentService.findById(idStudent);
+        if(student==null)  throw new IdNotFoundException(idStudent);
+        if(club==null) throw new IdNotFoundException(idClub);
+        club.setPresident(student);
+        return club;
+    }
+    //Delete the president of the club
+    public Club deletePresident(long idClub) {
+        Club club=this.findClubById(idClub);
+        if(club==null) throw new IdNotFoundException(idClub);
+        club.setPresident(null);
+        return club;
+    }
+
 }
