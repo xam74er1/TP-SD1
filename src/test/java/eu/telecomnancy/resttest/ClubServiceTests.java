@@ -76,5 +76,4 @@ public class ClubServiceTests {
         Club club=clubService.findClubByName(echec);
         assertThat(club.getPlace().get().getName()).isEqualTo(amphi);
     }
-
 }

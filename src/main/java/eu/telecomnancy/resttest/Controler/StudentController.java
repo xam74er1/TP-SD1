@@ -17,17 +17,24 @@ public class StudentController {
     //Make a get request to /students who return s all the students
     @GetMapping("/students")
     public Iterable<StudentModel> getAllStudents() {
-     return studentService.getAllStudents().stream().map(StudentModel::new).collect(Collectors.toSet());
+        return studentService.getAllStudents().stream().map(StudentModel::new).collect(Collectors.toSet());
 
     }
+
     //Make a get request to /students/id where id is the student id
     @GetMapping("/students/{id}")
     public ResponseEntity<StudentModel> getStudentById(@PathVariable long id) {
-        return ResponseEntity.ok(new StudentModel(studentService.findById( id)));
+        return ResponseEntity.ok(new StudentModel(studentService.findById(id)));
     }
+
     //Make a post request to /students who create a new student
     @PostMapping("/students")
     public ResponseEntity<StudentModel> createStudent(@RequestBody StudentModel studentModel) {
         return ResponseEntity.ok(new StudentModel(studentService.createStudent(studentModel.getName())));
+    }
+
+    @DeleteMapping("/students/{id}")
+    public void deleteStudent(@PathVariable Long id) {
+        studentService.deleteStudent(id);
     }
 }

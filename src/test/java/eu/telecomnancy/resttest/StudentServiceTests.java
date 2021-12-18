@@ -82,7 +82,6 @@ class StudentServiceTests {
         echec.setPresident(norbert);
         assertThat(Test.getId()).isEqualTo(echec.getPresident().getId());
     }
-}
 
     @Transactional
     @Test
@@ -94,5 +93,21 @@ class StudentServiceTests {
         marie.addClub(echec);
         echec.setPresident(norbert);
         assertThat(marie.getId()).isNotEqualTo(echec.getPresident().getId());
+    }
+
+    @Transactional
+    @Test
+    public void StudentCreated(){
+        studentService.createStudent("Norbert");
+        assertThat(studentService.findByName("Norbert")).isNotNull();
+    }
+
+    @Transactional
+    @Test
+    public void StudentDeleted(){
+        studentService.createStudent("Norbert");
+        Student norbert= studentService.findByName("Norbert");
+        studentService.deleteStudent(norbert.getId());
+        assertThat( studentService.findById(norbert.getId())).isNull();
     }
 }
