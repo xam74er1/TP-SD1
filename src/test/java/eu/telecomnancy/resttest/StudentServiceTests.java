@@ -75,7 +75,7 @@ class StudentServiceTests {
     @Test
     public void whenValidId_ReturnStudent() {
         /* Test de la méthode findById() */
-        Student norbert=new Student("Norbert");
+        Student norbert=studentService.createStudent("Norbert");
         studentRepository.saveAndFlush(norbert);
         Student found = studentService.findById(norbert.getId());
         assertThat(found.getName()).isEqualTo(norbert.getName());
@@ -85,7 +85,7 @@ class StudentServiceTests {
     @Test
     public void whenInvalidId_ReturnStudent() {
         /* Test de la méthode l'exception StudentNotFound dans la méthode findByID() */
-        Student norbert=new Student("Norbert");
+        Student norbert=studentService.createStudent("Norbert");
         norbert.setId(1L);
         Exception exception = assertThrows(IdNotFoundException.class, () -> studentService.findById(norbert.getId()));
 
@@ -97,7 +97,7 @@ class StudentServiceTests {
     @Test
     @Transactional
     public void ValidStudentInClub_andItWorks(){
-        Student max = new Student("Max");
+        Student max = studentService.createStudent("Max");
         Club games = clubService.createClub("games");
         max.addClub(games);
         clubRepository.saveAndFlush(games);
@@ -107,7 +107,8 @@ class StudentServiceTests {
     @Test
     @Transactional
     public void InvalidStudentInClub_andItWorks(){
-        Student max = new Student("Max");
+        Student max = studentService.createStudent("Max");
+        max.setId(1L);
         Club games = clubService.createClub("games");
         max.addClub(games);
         clubRepository.saveAndFlush(games);
@@ -119,9 +120,10 @@ class StudentServiceTests {
     @Transactional
     @Test
     public void setStudentofClubPresident() {
-        Student norbert=new Student("Norbert");
+        Student norbert=studentService.createStudent("Norbert");
+        norbert.setId(13L);
         Student Test = studentService.findById(norbert.getId());
-        Club echec=new Club("Echec");
+        Club echec= clubService.createClub("Echec");
         norbert.addClub(echec);;
         echec.setPresident(norbert);
         assertThat(Test.getId()).isEqualTo(echec.getPresident().getId());
@@ -130,9 +132,11 @@ class StudentServiceTests {
     @Transactional
     @Test
     public void StudentNotClubPresident() {
-        Student norbert=new Student("Norbert");
-        Student marie = new Student("Marie");
-        Club echec=new Club("Echec");
+        Student norbert = studentService.createStudent("Norbert");
+        Student marie = studentService.createStudent("Marie");
+        norbert.setId(1L);
+        marie.setId(2L);
+        Club echec= clubService.createClub("Echec");
         norbert.addClub(echec);
         marie.addClub(echec);
         echec.setPresident(norbert);
