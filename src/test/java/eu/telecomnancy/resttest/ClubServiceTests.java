@@ -5,6 +5,7 @@ import eu.telecomnancy.resttest.Interface.RoomRepository;
 import eu.telecomnancy.resttest.Interface.StudentRepository;
 import eu.telecomnancy.resttest.Model.Club;
 import eu.telecomnancy.resttest.Model.Room;
+import eu.telecomnancy.resttest.Model.Student;
 import eu.telecomnancy.resttest.Service.ClubService;
 import eu.telecomnancy.resttest.Service.StudentService;
 import org.junit.jupiter.api.Test;
@@ -84,5 +85,4 @@ public class ClubServiceTests {
         Club club=clubService.findClubByName(echec);
         assertThat(club.getPlace().get().getName()).isEqualTo(amphi);
     }
-
 }

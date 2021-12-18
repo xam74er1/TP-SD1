@@ -3,7 +3,9 @@ package eu.telecomnancy.resttest;
 import eu.telecomnancy.resttest.Interface.ClubRepository;
 import eu.telecomnancy.resttest.Interface.RoomRepository;
 import eu.telecomnancy.resttest.Interface.StudentRepository;
+import eu.telecomnancy.resttest.Model.Club;
 import eu.telecomnancy.resttest.Model.Student;
+import eu.telecomnancy.resttest.Service.ClubService;
 import eu.telecomnancy.resttest.Service.StudentService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,7 +35,8 @@ class StudentServiceTests {
 
     @Autowired
     private StudentService studentService;
-
+    @Autowired
+    private ClubService clubService;
 
     @Test
     void contextLoads() {
@@ -78,5 +81,36 @@ class StudentServiceTests {
         assertThat(found.getName()).isEqualTo(norbert.getName());
     }
 
+    @Transactional
+    @Test
+    public void whenInvalidId_ReturnStudent() {
+        /* Test de la méthode l'exception StudentNotFound dans la méthode findByID() */
+        Student norbert=new Student("Norbert");
+        norbert.setId(1L);
+        Exception exception = assertThrows(IdNotFoundException.class, () -> studentService.findById(norbert.getId()));
 
+        String expectedMessage = "Could not find item " + norbert.getId();
+        String foundMessage = exception.getMessage();
+        assertTrue(foundMessage.contains(expectedMessage));
+    }
+
+    @Test
+    @Transactional
+    public void ValidStudentInClub_andItWorks(){
+        Student max = new Student("Max");
+        Club games = clubService.createClub("games");
+        max.addClub(games);
+        clubRepository.saveAndFlush(games);
+        assertTrue(max.getClubs().contains(clubService.findClubByName("games")));
+    }
+
+    @Test
+    @Transactional
+    public void InvalidStudentInClub_andItWorks(){
+        Student max = new Student("Max");
+        Club games = clubService.createClub("games");
+        max.addClub(games);
+        clubRepository.saveAndFlush(games);
+        assertTrue(max.getClubs().contains(clubService.findClubByName("games")));
+    }
 }
