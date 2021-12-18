@@ -130,6 +130,9 @@ public class Club {
     public void setPresident(Student president) {
         if (isActive()) {
             if (isMember(president)) {
+                if(this.president != null){
+                    this.president.getClubs().remove(this);
+                }
                 this.president = president;
                 president.getPreside().add(this);
             }

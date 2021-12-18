@@ -134,6 +134,61 @@ public class ClubControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(3)));
     }
+//Create a test to add a member to a club
+    @Test
+    public void addMemberToClub_success() throws Exception {
+        RECORD_1.setMembers(studentSet);
+        studentSet.add(student2);
+        studentSet.add(student3);
+        student.setId(42L);
+        Club added = new Club();
+        added.setMembers(RECORD_1.getMembers());
+        RECORD_1.setId(0L);
+        added.getMembers().add(student);
+        added.setName(RECORD_1.getName());
+        added.setId(RECORD_1.getId());
 
+        Mockito.when(clubService.findClubById(0L)).thenReturn(RECORD_1);
+        Mockito.when(studentService.findById(42L)).thenReturn(student);
+        Mockito.when(clubService.addStudentToClub(0L,student.getId())).thenReturn(added);
+
+        MockHttpServletRequestBuilder mockRequest = MockMvcRequestBuilders.post("/clubs/0/students/"+student.getId())
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
+                .content(this.mapper.writeValueAsString(student));
+
+        mockMvc.perform(mockRequest)
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", notNullValue()))
+                .andExpect(jsonPath("$.studentsId", hasSize(3)));
+    }
+    //create a test to set the president to a club
+    @Test
+    public void setPresidentToClub_success() throws Exception {
+        RECORD_1.setPresident(student);
+        RECORD_1.setId(50L);
+        Club updated = new Club();
+        updated.getMembers().add(student);
+        updated.setPresident(student);
+        updated.setId(RECORD_1.getId());
+        updated.setName(RECORD_1.getName());
+        updated.setId(51L);
+        student.setId(42L);
+        Mockito.when(clubService.findClubById(50L)).thenReturn(RECORD_1);
+        Mockito.when(studentService.findById(42L)).thenReturn(student);
+        Mockito.when(clubService.setPresident(RECORD_1.getId(),student.getId())).thenReturn(updated);
+
+
+
+        mockMvc.perform(MockMvcRequestBuilders
+                        .post("/clubs/"+RECORD_1.getId()+"/president/"+student.getId())
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", notNullValue()))
+                .andExpect(jsonPath("$.presidentId", notNullValue()))
+                .andExpect(jsonPath("$.presidentId", is(42)));
+
+
+    }
 }
 

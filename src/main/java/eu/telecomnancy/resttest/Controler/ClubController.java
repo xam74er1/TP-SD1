@@ -26,8 +26,7 @@ public class ClubController {
     @Autowired
     private ClubService clubService;
 
-    @Autowired
-    private StudentService studentService;
+
 
 
     /* Avec GET et ce mapping on récupère tous les clubs exisants. */
@@ -38,7 +37,7 @@ public class ClubController {
 
     /* Avec POST et ce mapping on créé un nouveau club passé dans le corps de la requête. */
     @PostMapping("/clubs")
-    public ResponseEntity<ClubModel> createClub(@RequestBody ClubModel newClub) {
+    public ResponseEntity<ClubModel> createRoom(@RequestBody ClubModel newClub) {
         System.out.println("createClub "+newClub);
         return ResponseEntity.ok(new ClubModel(clubService.createClub(newClub.getName())));
     }
@@ -78,12 +77,14 @@ public class ClubController {
             return ResponseEntity.badRequest().build();
         }
     }
-    //set the president fir a club using id in the url
+    //set the president for a club using id in the url
     @PostMapping("/clubs/{id}/president/{studendId}")
     public ResponseEntity<ClubModel> setPresident(@PathVariable Long id, @PathVariable long studendId) {
         try {
-            return ResponseEntity.ok( new ClubModel(clubService.setPresident(id,studendId)));
+            Club tmp = clubService.setPresident(id, studendId);
+            return ResponseEntity.ok( new ClubModel(tmp));
         }catch (Exception e){
+            e.printStackTrace();
             return ResponseEntity.badRequest().build();
         }
     }
@@ -98,8 +99,31 @@ public class ClubController {
         }
     }
 
+    //Make a post requeste to add a student to a club
+    @PostMapping("/clubs/{id}/students")
+    public ResponseEntity<ClubModel> addStudent(@PathVariable Long id, @RequestBody StudentModel student) {
+        try {
+            return ResponseEntity.ok( new ClubModel(clubService.addStudentToClub(id,student.getId())));
+        }catch (Exception e){
+            return ResponseEntity.badRequest().build();
+        }
+    }
+    //add a student to a club using id in the url
+    @PostMapping("/clubs/{id}/students/{studentId}")
+    public ResponseEntity<ClubModel> addStudent(@PathVariable Long id, @PathVariable long studentId) {
+        try {
+            Club tmp = clubService.addStudentToClub(id, studentId);
+            return ResponseEntity.ok( new ClubModel(tmp));
+        }catch (Exception e){
+            e.printStackTrace();
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
+
+
     @PostMapping("/room/")
-    public ResponseEntity<Room> createClub(@RequestBody Room newRoom) {
+    public ResponseEntity<Room> createRoom(@RequestBody Room newRoom) {
         return ResponseEntity.ok(clubService.createRoom(newRoom.getName()));
     }
 

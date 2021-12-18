@@ -65,10 +65,15 @@ public class ClubService {
         throw new IdNotFoundException(id);
     }
 
-    public void addStudentToClub(String clubName, String studentName) {
-        Club club=this.findClubByName(clubName);
-        Student student= studentService.findByName(studentName);
+    public Club addStudentToClub(long clubId, long idSudent) {
+        Club club=findClubById(clubId);
+        if (club==null) {
+            throw new NameNotFoundException("Club does not exist :"+clubId);
+        }
+        System.out.println("Club "+club);
+        Student student= studentService.findById(idSudent);
         student.addClub(club);
+        return club;
     }
 
     public Set<Student> getClubMembers(String clubName) {
@@ -127,14 +132,18 @@ public class ClubService {
         Student student=studentService.findById(idStudent);
         if(student==null)  throw new IdNotFoundException(idStudent);
         if(club==null) throw new IdNotFoundException(idClub);
+
         club.setPresident(student);
+        //clubRepository.save(club);
         return club;
     }
     //Delete the president of the club
     public Club deletePresident(long idClub) {
         Club club=this.findClubById(idClub);
         if(club==null) throw new IdNotFoundException(idClub);
+
         club.setPresident(null);
+        //clubRepository.save(club);
         return club;
     }
 

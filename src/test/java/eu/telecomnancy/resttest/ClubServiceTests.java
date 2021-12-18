@@ -85,4 +85,18 @@ public class ClubServiceTests {
         Club club=clubService.findClubByName(echec);
         assertThat(club.getPlace().get().getName()).isEqualTo(amphi);
     }
+    //create a test to set the president of a club
+    @Test
+    @Transactional
+    public void addPresidentToAClub_andItWorks(){
+        String echec="echec";
+        String president="president";
+        Club club = clubService.createClub(echec);
+        Student student = studentService.createStudent(president);
+        clubService.addStudentToClub(club.getId(),student.getId());
+        clubService.setPresident(club.getId(),student.getId());
+        Club clubPres=clubService.findClubById(club.getId());
+        assertThat(clubPres.getPresident()).isNotNull();
+        assertThat(clubPres.getPresident().getName()).isEqualTo(president);
+    }
 }

@@ -84,12 +84,10 @@ class StudentServiceTests {
     @Transactional
     @Test
     public void whenInvalidId_ReturnStudent() {
-        /* Test de la méthode l'exception StudentNotFound dans la méthode findByID() */
-        Student norbert=studentService.createStudent("Norbert");
-        norbert.setId(1L);
-        Exception exception = assertThrows(IdNotFoundException.class, () -> studentService.findById(norbert.getId()));
+long id = 6666;
+        Exception exception = assertThrows(IdNotFoundException.class, () -> studentService.findById(id));
 
-        String expectedMessage = "Could not find item " + norbert.getId();
+        String expectedMessage = "Could not find item " + id;
         String foundMessage = exception.getMessage();
         assertTrue(foundMessage.contains(expectedMessage));
     }
@@ -108,20 +106,17 @@ class StudentServiceTests {
     @Transactional
     public void InvalidStudentInClub_andItWorks(){
         Student max = studentService.createStudent("Max");
-        max.setId(1L);
         Club games = clubService.createClub("games");
-        max.addClub(games);
-        clubRepository.saveAndFlush(games);
+        clubService.addStudentToClub(games.getId(),max.getId());
         assertTrue(max.getClubs().contains(clubService.findClubByName("games")));
     }
-}
+
 
 
     @Transactional
     @Test
     public void setStudentofClubPresident() {
         Student norbert=studentService.createStudent("Norbert");
-        norbert.setId(13L);
         Student Test = studentService.findById(norbert.getId());
         Club echec= clubService.createClub("Echec");
         norbert.addClub(echec);;
@@ -134,8 +129,6 @@ class StudentServiceTests {
     public void StudentNotClubPresident() {
         Student norbert = studentService.createStudent("Norbert");
         Student marie = studentService.createStudent("Marie");
-        norbert.setId(1L);
-        marie.setId(2L);
         Club echec= clubService.createClub("Echec");
         norbert.addClub(echec);
         marie.addClub(echec);
@@ -156,7 +149,9 @@ class StudentServiceTests {
         studentService.createStudent("Norbert");
         Student norbert= studentService.findByName("Norbert");
         studentService.deleteStudent(norbert.getId());
-        assertThat( studentService.findById(norbert.getId())).isNull();
+        //Assert a error is thrown
+        assertThrows(IdNotFoundException.class, () -> studentService.findById(norbert.getId()));
     }
+
 }
 
