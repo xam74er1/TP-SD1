@@ -153,5 +153,36 @@ long id = 6666;
         assertThrows(IdNotFoundException.class, () -> studentService.findById(norbert.getId()));
     }
 
+    //Make a test to updte the student name
+    @Transactional
+    @Test
+    public void StudentUpdated(){
+        studentService.createStudent("Norbert");
+        Student norbert= studentService.findByName("Norbert");
+        studentService.updateStudent(norbert.getId(), "Norbert2");
+        assertThat(studentService.findById(norbert.getId())).isNotNull();
+    }
+    //Make a test to set the student president of club
+    @Transactional
+    @Test
+    public void StudentPresidentOfClub(){
+        Student norbert= studentService.createStudent("Norbert");
+        Club echec= clubService.createClub("Echec");
+        norbert.addClub(echec);
+        echec.setPresident(norbert);
+        assertThat(norbert.getClubs().contains(echec));
+    }
+    //Make a test to set the student president of club usign the student service
+    @Transactional
+    @Test
+    public void StudentPresidentOfClubUsingStudentService(){
+        Student norbert= studentService.createStudent("Norbert");
+        Club echec= clubService.createClub("Echec");
+        clubService.addStudentToClub(echec.getId(),norbert.getId());
+        studentService.setPresident(norbert.getId(),echec.getId());
+        Student nvxNorbert = studentService.findById(norbert.getId());
+        assertThat(norbert.getPreside().stream().anyMatch(club -> club.getId() == echec.getId()));
+    }
+
 }
 

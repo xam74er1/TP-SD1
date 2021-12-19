@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Transactional
@@ -47,12 +48,14 @@ public class StudentService {
     }
 
     /* Mise à jour du nom d'un étudiant */
-    public void updateStudent(Long id, String newName) {
-        repository.findById(id)
+    public Student updateStudent(Long id, String newName) {
+        Optional<Student> res = repository.findById(id)
                 .map(student -> {
                     student.setName(newName);
-                    return repository.save(student);
+                    repository.save(student);
+                    return student;
                 });
+        return res.orElse(null);
     }
 
     public Student createStudent(String name) {
@@ -69,4 +72,12 @@ public class StudentService {
     }
 
 
+    public Student setPresident(long id, long clubId) {
+        Club club=clubRepository.findById(clubId).orElseThrow(() -> new IdNotFoundException(clubId));
+        Student student=repository.findById(id).orElseThrow(() -> new IdNotFoundException(id));
+
+        club.setPresident(student);
+        return student;
+    }
+    //Create a metode to up
 }

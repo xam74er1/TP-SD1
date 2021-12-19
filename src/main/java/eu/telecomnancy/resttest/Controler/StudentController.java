@@ -31,6 +31,18 @@ public class StudentController {
         return ResponseEntity.ok(new StudentModel(studentService.createStudent(studentModel.getName())));
     }
 
+    //Create a methode to update a student
+    @PutMapping("/students/{id}")
+    public ResponseEntity<StudentModel> updateStudent(@PathVariable long id, @RequestBody StudentModel studentModel) {
+        return ResponseEntity.ok(new StudentModel(studentService.updateStudent(id, studentModel.getName())));
+    }
+
+    //Create a metode to set this student president
+    @PutMapping("/students/{id}/president/{clubId}")
+    public ResponseEntity<StudentModel> setPresident(@PathVariable long id, @PathVariable long clubId) {
+        return ResponseEntity.ok(new StudentModel(studentService.setPresident(id, clubId)));
+    }
+
     @DeleteMapping("/students/{id}")
     public void deleteStudent(@PathVariable Long id) {
         studentService.deleteStudent(id);
