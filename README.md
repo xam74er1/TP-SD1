@@ -26,4 +26,12 @@ Ces modifications se sont accompagnées de tests unitaires et d'intégration afi
 Nous avons aussi changé des méthodes dans le modèle du Controller afin d'éviter une recursion infinie lors de la 
 sérialisation des données.
 
-##
+##RabbitMQ 
+
+![Architecture du projet RabbitMQ](./Archi_RabbitMQ_TP2.png "Architecture du projet RabbitMQ")
+
+Nous avons mis en place l'architecture ci-dessus pour l'application du TP RabbitMQ. 
+
+Afin de faire fonctionner ce projet, il nous a fallu créer une fonction effectuant une requête HTTP sur le serveur REST. 
+Pour vérifier que cela fonctionne, nous avons réaliser divers tests unitaires qui vérifie que les retours des requêtes 
+HTTP sont bien celles attendues. 
